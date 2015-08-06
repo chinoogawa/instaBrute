@@ -1,5 +1,5 @@
 # InstaBrute
-
+<p align="center"><img src="http://forums.windowscentral.com/attachments/instagram/50396d1385186440t-947316_143336859186012_2088783896_n.png"</img></p>
 ## Description
 
 Instagram bruteforce exploit module
@@ -28,3 +28,9 @@ Usage: instaBrute -h
 1. Check username existence
 2. Check password for a given username
 3. Brute forcer mother fuckers!
+
+## Special Thanks
+
+[@camicelli!](http://twitter.com/camicelli)
+
+Gabriel Rezzonico
