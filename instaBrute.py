@@ -55,7 +55,6 @@ def dictionaryAttack(usernames,passwords):
 			for password in passwords:
 				if (login(username,password) == 1):
 					cj.clear()
-					verified += 1
 					break
 	else:
 		if (userExists(usernames) == 1):
