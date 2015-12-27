@@ -14,6 +14,7 @@ Usage: instaBrute -h
 2. CookieLib
 3. Simplejson
 4. OptParse
+5. Selenium
 
 ## Example
 

