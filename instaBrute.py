@@ -3,12 +3,16 @@ from mainLib import *
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import os
 import simplejson as json
 import sys
 import optparse
 
-profile = webdriver.FirefoxProfile()
-profile.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36")
+#profile = webdriver.FirefoxProfile()
+#profile.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36")
+chromedriver = "./chromedriver"
+os.environ["webdriver.chrome.driver"] = chromedriver
+profile = webdriver.Chrome(chromedriver)
 driver = "reserved"
 
 def userExists(username):
@@ -129,7 +133,7 @@ def main():
 			print 'Check the path to the users file and try again'
 			exit()
         	
-        	driver = webdriver.Firefox(profile)
+        	driver = webdriver.Chrome(chromedriver)
         	driver.implicitly_wait(30)
 		dictionaryAttack(usernames,passwords,delay)
 	else:
