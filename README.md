@@ -28,7 +28,7 @@ Usage: instaBrute -h
 
 1. Check username existence
 2. Check password for a given username
-3. Brute forcer mother fuckers!
+3. Brute forcer !
 
 ## Special Thanks
 
