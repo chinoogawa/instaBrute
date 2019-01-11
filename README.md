@@ -4,6 +4,12 @@
 
 Instagram bruteforce exploit module
 
+## Installation
+
+```python
+pip install -r requirements.txt
+```
+
 ## Usage
 
 Usage: instaBrute -h
@@ -19,11 +25,11 @@ Usage: instaBrute -h
 ## Example
 
 ```python
-	python instaBrute.py -f usernames.txt -d dictionary.txt
+python instaBrute.py -f usernames.txt -d dictionary.txt
 ```
 ```python
-	python instaBrute.py -u facebook -d dictionary.txt
-```	
+python instaBrute.py -u facebook -d dictionary.txt
+```
 ## Features
 
 1. Check username existence
