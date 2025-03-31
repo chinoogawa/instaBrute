@@ -7,7 +7,7 @@ Instagram bruteforce exploit module
 ## Installation
 
 ```python
-pip install -r sagar.txt
+pip install -r .https://github.com/Sagar2430A/instabrute
 ```
 
 ## Usage
