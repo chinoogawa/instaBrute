@@ -25,7 +25,7 @@ Usage: instaBrute -h
 ## Example
 
 ```python
-python instaBrute.py -f usernames.txt -d dictionary.txt
+python instaBrute.py -f instagarm.txt -d dictionary.txt
 ```
 ```python
 python instaBrute.py -u facebook -d dictionary.txt
