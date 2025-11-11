@@ -36,8 +36,6 @@ python instaBrute.py -u facebook -d dictionary.txt
 2. Check password for a given username
 3. Brute forcer mother fuckers!
 
-## Special Thanks
-
-[@bab_xza!](http://instagram.com/bab_xza_)
+## Special Thanks to
 
 Gabriel Rezzonico
