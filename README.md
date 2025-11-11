@@ -25,7 +25,7 @@ Usage: instaBrute -h
 ## Example
 
 ```python
-python instaBrute.py -f usernames.txt -d dictionary.txt
+python instaBrute.py -f usernames(bab_xza_).txt -d dictionary.txt
 ```
 ```python
 python instaBrute.py -u facebook -d dictionary.txt
@@ -36,8 +36,6 @@ python instaBrute.py -u facebook -d dictionary.txt
 2. Check password for a given username
 3. Brute forcer mother fuckers!
 
-## Special Thanks
-
-[@camicelli!](http://twitter.com/camicelli)
+## Special Thanks to
 
 Gabriel Rezzonico
